@@ -1,0 +1,177 @@
+﻿@using CleanArchitecture.Blazor.Application.Common.Constants
+@using CleanArchitecture.Blazor.Application.Features.LookupDetails.Commands.AddEdit
+@using CleanArchitecture.Blazor.Application.Features.LookupDetails.DTOs
+@using CleanArchitecture.Blazor.Application.Features.Lookups.DTOs
+
+@inherits MudComponentBase
+@inject IValidationService Validator
+@inject IStringLocalizer<LookupDetails> L
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@model" @ref="@_form" Validation="@(Validator.ValidateValue(model))">
+            <MudGrid>
+                @*TODO: define mudform that should be edit fields, for example:*@
+                <MudItem xs="12" md="6">
+                    @* <MudNumericField  Label="@L[model.GetMemberDescription(x=>x.LookupId)]" @bind-Value="model.LookupId" For="@(() => model.LookupId)" Min="0" Required="false" RequiredError="@L["lookup id is required!"]"></MudNumericField > *@
+                    <MudAutocomplete T="LookupDto"
+                    Label="Lookup"
+                    Value="selectedItem"
+                    CoerceText="true"
+                    ToStringFunc="@(m => m == null ? string.Empty : m.Name)"
+                    SearchFunc="SearchItems"
+                    ResetValueOnEmptyText="true"
+                    Clearable="true"
+                    Required="true"
+                    RequiredError="@L["lookup is required!"]"
+                    ValueChanged="OnLookupChanged"/>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L[model.GetMemberDescription(x=>x.Code)]" @bind-Value="model.Code" For="@(() => model.Code)" Required="true" RequiredError="@L["code is required!"]"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L[model.GetMemberDescription(x=>x.Name)]" @bind-Value="model.Name" For="@(() => model.Name)" Required="true" RequiredError="@L["name is required!"]"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L[model.GetMemberDescription(x=>x.NameBN)]" @bind-Value="model.NameBN" For="@(() => model.NameBN)" Required="false" RequiredError="@L["name bn is required!"]"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField Label="@L[model.GetMemberDescription(x=>x.Description)]" For="@(() => model.Description)" @bind-Value="model.Description"></MudTextField>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    @* <MudNumericField Label="@L[model.GetMemberDescription(x=>x.LookupDetailId)]" @bind-Value="model.LookupDetailId" For="@(() => model.LookupDetailId)" Min="0" Required="false" RequiredError="@L["lookup detail id is required!"]"></MudNumericField> *@
+                    <MudAutocomplete T="LookupDetailDto"
+                    Label="Parent"
+                    @bind-Value="selectedParent"
+                    CoerceText="true"
+                    ToStringFunc="@(m => m == null ? string.Empty : m.Name)"
+                    SearchFunc="SearchParent"
+                    ResetValueOnEmptyText="true"
+                    Clearable="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudCheckBox Label="@L[model.GetMemberDescription(x=>x.IsActive)]" @bind-Value="model.IsActive" For="@(() => model.IsActive)"></MudCheckBox>
+                </MudItem>
+
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@ConstantString.Cancel</MudButton>
+        <MudLoadingButton Loading="@_savingnew" OnClick="SaveAndNew">@ConstantString.SaveAndNew</MudLoadingButton>
+        <MudLoadingButton Loading="@_saving" OnClick="Submit">@ConstantString.Save</MudLoadingButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    MudForm? _form;
+    private bool _saving = false;
+    private bool _savingnew = false;
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = default!;
+    AddEditLookupDetailCommandValidator _modelValidator = new();
+    [EditorRequired][Parameter] public AddEditLookupDetailCommand model { get; set; } = null!;
+    [Inject] ISelectListService<LookupDto> _lookupSelectListService { get; set; }
+    [Inject] ISelectListService<LookupDetailDto> _lookupDetailSelectListService { get; set; }
+
+    private LookupDto selectedItem;
+    private LookupDetailDto selectedParent;
+    private IEnumerable<LookupDto> lookupDtos = new List<LookupDto>();
+    private IEnumerable<LookupDetailDto> lookupDetailDtos = new List<LookupDetailDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        lookupDtos = await _lookupSelectListService.GetSelectList(SelectListConstants.GetLookupSelectList, new { });
+        if (model.Id > 0)
+        {
+            lookupDetailDtos = await _lookupDetailSelectListService.GetSelectList(SelectListConstants.GetLookupDetailSelectList, new { });
+            selectedItem = lookupDtos
+                .FirstOrDefault(e => e.Id == model.LookupId) ?? null;
+            selectedParent = lookupDetailDtos.FirstOrDefault(e => e.Id == model.LookupDetailId) ?? null;
+        }
+    }
+    async Task Submit()
+    {
+        try
+        {
+            _saving = true;
+            await _form!.Validate().ConfigureAwait(false);
+            if (!_form!.IsValid)
+                return;
+
+            model.LookupId = selectedItem.Id;
+            if(selectedParent is not null){
+                model.LookupDetailId = selectedParent.Id;
+            }
+            var result = await Mediator.Send(model);
+            result.Match(data =>
+            {
+                MudDialog.Close(DialogResult.Ok(true));
+                Snackbar.Add(ConstantString.SaveSuccess, MudBlazor.Severity.Info);
+                return data;
+            }, errors =>
+            {
+                Snackbar.Add(errors, MudBlazor.Severity.Error);
+                return -1;
+            });
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+    async Task SaveAndNew()
+    {
+        try
+        {
+            _savingnew = true;
+            await _form!.Validate().ConfigureAwait(false);
+            if (!_form!.IsValid)
+                return;
+
+            model.LookupId = selectedItem.Id;
+            if (selectedParent is not null)
+            {
+                model.LookupDetailId = selectedParent.Id;
+            }
+            var result = await Mediator.Send(model);
+            await result.MatchAsync(async data =>
+            {
+                Snackbar.Add(ConstantString.SaveSuccess, MudBlazor.Severity.Info);
+                await Task.Delay(300);
+                model = new AddEditLookupDetailCommand() { };
+                return data;
+            }, errors =>
+            {
+                Snackbar.Add(errors, MudBlazor.Severity.Error);
+                return Task.FromResult(-1);
+            });
+        }
+        finally
+        {
+            _savingnew = false;
+        }
+    }
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task<IEnumerable<LookupDto>> SearchItems(string searchText, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return lookupDtos.AsEnumerable();
+
+        return lookupDtos.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+    private async Task<IEnumerable<LookupDetailDto>> SearchParent(string searchText, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return lookupDetailDtos.Where(e => e.Id != model.Id).AsEnumerable();
+
+        return lookupDetailDtos.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public async Task OnLookupChanged(LookupDto lookup)
+    {
+        selectedItem = lookup;
+        lookupDetailDtos = await _lookupDetailSelectListService.GetSelectList(SelectListConstants.GetLookupDetailSelectListByLookupId, new { LookupId = lookup.Id});
+    }
+}

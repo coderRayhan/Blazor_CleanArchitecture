@@ -1,0 +1,40 @@
+﻿@using System.Linq.Expressions
+<MudGrid Class="ma-0 pa-0 form-group">
+	<MudItem xs="3" Class="d-flex flex-end">
+		<label class="form-label">@Label</label>
+	</MudItem>
+	<MudItem xs="1"></MudItem>
+	<MudItem xs="8" Class="d-flex flex-column gap-1">
+		<InputText @bind-Value="InternalValue" class="form-control" />
+		<MudItem Style="margin-top: 0.25rem;">
+			<ValidationMessage For="ValidationFor" />
+		</MudItem>
+	</MudItem>
+</MudGrid>
+
+@code {
+	[Parameter]
+	public string Label { get; set; } = string.Empty;
+
+	[Parameter]
+	public string Value { get; set; } = string.Empty;
+
+	[Parameter]
+	public EventCallback<string> ValueChanged { get; set; }
+
+	[Parameter]
+	public Expression<Func<string>> ValidationFor { get; set; }
+
+	private string InternalValue
+	{
+		get => Value;
+		set
+		{
+			if (Value != value)
+			{
+				Value = value;
+				ValueChanged.InvokeAsync(value); // Notify parent of the change
+			}
+		}
+	}
+}

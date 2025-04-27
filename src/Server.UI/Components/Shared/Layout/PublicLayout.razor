@@ -1,0 +1,152 @@
+﻿@using Microsoft.AspNetCore.Antiforgery
+@layout MainLayout
+@inherits LayoutComponentBase
+@inject LayoutService LayoutService
+@inject IAntiforgery _antiforgery;
+@inject IHttpContextAccessor _httpContextAccessor;
+@inject IStringLocalizer<SharedResource> L
+@inject IDialogService sialogService
+<MudLayout>
+	<MudAppBar Elevation="0"
+			   Style="background: white; padding-top:20px; padding-bottom:20px">
+		@* <NavLink ActiveClass="d-flex align-center me-4" href="/">
+            <MudIcon Class="ml-6 mr-2"
+                     Color="Color.Primary"
+                     Icon="@Icons.Custom.Brands.MudBlazor"
+                     Size="Size.Large"/>
+            <MudText Typo="Typo.subtitle2">
+                <b>@L[ApplicationSettings.AppName]</b>
+            </MudText>
+        </NavLink> *@
+        <MudImage Fluid="true" Src="img/sosheader.png" Alt="Swedish Farm House" Class="rounded-lg responsive-image" />
+		<MudSpacer />
+		<MudHidden Breakpoint="Breakpoint.SmAndDown" >
+			@* <LanguageSelector/> *@
+			<MudTooltip Arrow="true"
+						Text="Home">
+				<MudButton Variant="Variant.Text" OnClick="@(()=>Navigation.NavigateTo(Login.PageUrl,true))"
+						   StartIcon="@Icons.Material.Rounded.Home"
+						   Style="text-transform:none">
+					Home
+				</MudButton>
+			</MudTooltip>
+			<MudTooltip Arrow="true"
+						Text="Admission Circular">
+				<MudButton Variant="Variant.Text" OnClick="@(async ()=> await ShowPdfDialog("/docs/doc.pdf", "Admission Circular"))"
+						   StartIcon="@Icons.Material.Rounded.Newspaper"
+						   Style="text-transform:none">
+					Admission Circular
+				</MudButton>
+			</MudTooltip>
+			<MudTooltip Text="Instruction">
+				@* <MudIconButton Class="mx-1"
+                               Icon="@(LayoutService.IsRTL ? Icons.Material.Filled.FormatTextdirectionLToR : Icons.Material.Filled.FormatTextdirectionRToL)"
+                               Color="Color.Default"
+                               OnClick="@(e => LayoutService.ToggleRightToLeft())"/> *@
+				<MudButton Variant="Variant.Text" OnClick="@(async ()=> await ShowPdfDialog("/docs/doc.pdf", "Document"))"
+						   StartIcon="@Icons.Material.Rounded.Help"
+						   Style="text-transform:none">
+					Instruction
+				</MudButton>
+			</MudTooltip>
+			<AuthorizeView>
+				<Authorized>
+					<form action="@IdentityComponentsEndpointRouteBuilderExtensions.Logout" method="post">
+						<input type="hidden" name="__RequestVerificationToken" value="@antiforgeryToken" />
+						<input type="hidden" name="ReturnUrl" value="/" />
+						<MudTooltip Text="@L["Logout"]">
+							<MudButton Style="text-transform:none"
+									   ButtonType="ButtonType.Submit"
+									   Variant="Variant.Text"
+									   StartIcon="@Icons.Material.Filled.Logout">
+								@L["Logout"]
+							</MudButton>
+						</MudTooltip>
+					</form>
+				</Authorized>
+				<NotAuthorized>
+					<MudTooltip Text="@L["Login"]">
+						<MudButton Variant="Variant.Text" OnClick="@(()=>Navigation.NavigateTo(Login.PageUrl,true))"
+								   StartIcon="@Icons.Material.Rounded.Login"
+								   Style="text-transform:none">
+							@L["Login"]
+						</MudButton>
+					</MudTooltip>
+				</NotAuthorized>
+			</AuthorizeView>
+
+		</MudHidden>
+		<MudHidden Breakpoint="Breakpoint.SmAndDown" Invert="true">
+			<LanguageSelector />
+			<AuthorizeView>
+				<Authorized>
+					<form action="@IdentityComponentsEndpointRouteBuilderExtensions.Logout" method="post">
+						<input type="hidden" name="__RequestVerificationToken" value="@antiforgeryToken" />
+						<input type="hidden" name="ReturnUrl" value="/" />
+						<MudTooltip Text="@L["Logout"]">
+							<MudButton Style="text-transform:none"
+									   ButtonType="ButtonType.Submit"
+									   Variant="Variant.Text"
+									   StartIcon="@Icons.Material.Filled.Logout">
+								@L["Logout"]
+							</MudButton>
+						</MudTooltip>
+					</form>
+				</Authorized>
+				<NotAuthorized>
+					<MudTooltip Text="@L["Login"]">
+						<MudButton Variant="Variant.Text" OnClick="@(()=>Navigation.NavigateTo(Login.PageUrl,true))"
+								   StartIcon="@Icons.Material.Rounded.Login"
+								   Style="text-transform:none">
+							@L["Login"]
+						</MudButton>
+					</MudTooltip>
+				</NotAuthorized>
+			</AuthorizeView>
+		</MudHidden>
+	</MudAppBar>
+	<MudMainContent>
+		<MudContainer MaxWidth="MaxWidth.Large" Class="mb-4 mt-4" Style="height:fit-content">
+			@Body
+			@* <MudPaper Class="pa-16 ma-2" Elevation="0" Style="background-color:#42aab2; no-repeat center bottom; background-size: cover;">
+            </MudPaper> *@
+		</MudContainer>
+	</MudMainContent>
+</MudLayout>
+
+@code
+{
+	private string? antiforgeryToken;
+	protected override void OnInitialized()
+	{
+		antiforgeryToken = getAntiforgeryToken();
+	}
+	private string? getAntiforgeryToken()
+	{
+		var httpContext = _httpContextAccessor.HttpContext;
+		if (httpContext == null)
+		{
+			throw new InvalidOperationException("HttpContext is not available.");
+		}
+		var tokens = _antiforgery.GetAndStoreTokens(httpContext);
+		return tokens.RequestToken;
+	}
+
+	private async Task ShowPdfDialog(string src, string title)
+	{
+		var dialogOptions = new DialogOptions
+			{
+				CloseButton = true,
+				MaxWidth = MaxWidth.Large,
+				FullWidth = true
+			};
+
+		var dialogParameters = new DialogParameters<PdfViewerDialog>
+		{
+			{x => x.Src, src},
+			{x => x.Title, title}
+		};
+
+		await DialogService.ShowAsync<PdfViewerDialog>(title, dialogParameters, dialogOptions);
+	}
+}

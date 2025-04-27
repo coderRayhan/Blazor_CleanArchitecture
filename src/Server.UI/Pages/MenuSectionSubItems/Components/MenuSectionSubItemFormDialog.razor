@@ -1,0 +1,193 @@
+﻿@using CleanArchitecture.Blazor.Application.Common.Constants
+@using CleanArchitecture.Blazor.Application.Features.Common.Queries
+@using CleanArchitecture.Blazor.Application.Features.MenuSectionItems.DTOs
+@using CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.Commands.AddEdit
+@using CleanArchitecture.Blazor.Domain.Common.Enums
+
+@inherits MudComponentBase
+@inject IValidationService Validator
+@inject IStringLocalizer<MenuSectionSubItems> L
+
+<MudDialog>
+	<DialogContent>
+		<MudForm Model="@model" @ref="@_form" Validation="@(Validator.ValidateValue(model))">
+			<MudGrid>
+				@*TODO: define mudform that should be edit fields, for example:*@
+				<MudItem xs="12" md="6">
+					@* <MudNumericField Label="@L[model.GetMemberDescription(x=>x.MenuSectionItemId)]"
+									 @bind-Value="model.MenuSectionItemId"
+									 For="@(() => model.MenuSectionItemId)"
+									 Min="0"
+									 Required="false"
+									 RequiredError="@L["menu section item id is required!"]">
+					</MudNumericField> *@
+
+					@* <SelectListAutoComplete Label="Menu Section Item"
+											SelectedItem="selectedMenuSectionItem"
+											OnValueChanged="OnValueChanged"
+											SearchFunc="SearchItems"
+											IsRequired="true"></SelectListAutoComplete> *@
+
+					@* <SelectListAutoComplete T="string" SQL="@SelectListConstants.GetMenuSectionSelectList" Parameters="new object()" @bind-Value="model.MenuSectionItemId" /> *@
+
+					<MudAutocomplete T="MenuSectionItemDto"
+									 Label="Menu Section Item"
+									 @bind-Value="selectedMenuSectionItem"
+									 CoerceText="true"
+									 ToStringFunc="@(m => m== null ? string.Empty : m.Title)"
+									 SearchFunc="SearchItems"
+									 ResetValueOnEmptyText="true"
+									 Clearable="true" />
+				</MudItem>
+				<MudItem xs="12" md="6">
+					<MudTextField Label="@L[model.GetMemberDescription(x=>x.Title)]"
+								  @bind-Value="model.Title"
+								  For="@(() => model.Title)"
+								  Required="false"
+								  RequiredError="@L["title is required!"]">
+					</MudTextField>
+				</MudItem>
+				<MudItem xs="12" md="6">
+					<MudTextField Label="@L[model.GetMemberDescription(x=>x.Href)]"
+								  @bind-Value="model.Href"
+								  For="@(() => model.Href)"
+								  Required="false"
+								  RequiredError="@L["href is required!"]">
+					</MudTextField>
+				</MudItem>
+				<MudItem xs="12" md="6">
+					<MudEnumSelect TEnum="Nullable<PageStatus>"
+								   Label="@L[model.GetMemberDescription(x=>x.PageStatus)]"
+								   @bind-Value="model.PageStatus"
+								   For="@(() => model.PageStatus)"
+								   Required="false"
+								   RequiredError="@L["page status is required!"]">
+					</MudEnumSelect>
+				</MudItem>
+				<MudItem xs="12" md="6">
+					<MudTextField Label="@L[model.GetMemberDescription(x=>x.Target)]"
+								  @bind-Value="model.Target"
+								  For="@(() => model.Target)"
+								  Required="false"
+								  RequiredError="@L["target is required!"]">
+					</MudTextField>
+				</MudItem>
+                <MudItem xs="12" md="6">
+					<MudNumericField Label="@L[model.GetMemberDescription(x=>x.SerialNo)]"
+								  @bind-Value="model.SerialNo"
+								  For="@(() => model.SerialNo)"
+								  Required="false"
+								  RequiredError="@L["Serial is required!"]">
+					</MudNumericField>
+				</MudItem>
+
+			</MudGrid>
+		</MudForm>
+	</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="Cancel">@ConstantString.Cancel</MudButton>
+		<MudLoadingButton Loading="@_savingnew" OnClick="SaveAndNew">@ConstantString.SaveAndNew</MudLoadingButton>
+		<MudLoadingButton Loading="@_saving" OnClick="Submit">@ConstantString.Save</MudLoadingButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+	MudForm? _form;
+	private bool _saving = false;
+	private bool _savingnew = false;
+	[CascadingParameter]
+	IMudDialogInstance MudDialog { get; set; } = default!;
+	AddEditMenuSectionSubItemCommandValidator _modelValidator = new();
+	[EditorRequired][Parameter] public AddEditMenuSectionSubItemCommand model { get; set; } = new();
+	[Inject] ISelectListService<MenuSectionItemDto> _selectListService { get; set; }
+
+	private MenuSectionItemDto selectedMenuSectionItem = new();
+	private IEnumerable<MenuSectionItemDto> menuSectionItems = new List<MenuSectionItemDto>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		menuSectionItems = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionItemSelectList, new { });
+
+		if (model.Id > 0)
+		{
+			selectedMenuSectionItem = menuSectionItems.FirstOrDefault(e => e.Id == model.MenuSectionItemId)!;
+		}
+		// selectedMenuSectionItem = menuSectionItems
+		// .FirstOrDefault(e => e.Id == model.MenuSectionItemId) ?? new SelectListDto();
+	}
+
+	async Task Submit()
+	{
+		try
+		{
+			_saving = true;
+			await _form!.Validate().ConfigureAwait(false);
+			if (!_form!.IsValid)
+				return;
+
+			model.MenuSectionItemId = selectedMenuSectionItem.Id;
+			var result = await Mediator.Send(model);
+			result.Match(data =>
+			{
+				MudDialog.Close(DialogResult.Ok(true));
+				Snackbar.Add(ConstantString.SaveSuccess, MudBlazor.Severity.Info);
+				return data;
+			}, errors =>
+			{
+				Snackbar.Add(errors, MudBlazor.Severity.Error);
+				return -1;
+			});
+		}
+		finally
+		{
+			_saving = false;
+		}
+	}
+	async Task SaveAndNew()
+	{
+		try
+		{
+			_savingnew = true;
+			await _form!.Validate().ConfigureAwait(false);
+			if (!_form!.IsValid)
+				return;
+
+			model.MenuSectionItemId = selectedMenuSectionItem.Id;
+			var result = await Mediator.Send(model);
+			await result.MatchAsync(async data =>
+			{
+				Snackbar.Add(ConstantString.SaveSuccess, MudBlazor.Severity.Info);
+				await Task.Delay(300);
+				model = new AddEditMenuSectionSubItemCommand() { };
+				return data;
+			}, errors =>
+			{
+				Snackbar.Add(errors, MudBlazor.Severity.Error);
+				return Task.FromResult(-1);
+			});
+		}
+		finally
+		{
+			_savingnew = false;
+		}
+	}
+	void Cancel() => MudDialog.Cancel();
+
+	// private void OnValueChanged(SelectListDto value)
+	// {
+	// 	selectedMenuSectionItem = value;
+	// 	// Assign the selected item's Id to MenuSectionId
+	// 	model.MenuSectionItemId = value?.Id ?? 0; // Assuming 0 is a default value
+	// }
+
+	private async Task<IEnumerable<MenuSectionItemDto>> SearchItems(string searchText, CancellationToken cancellationToken)
+	{
+		if (string.IsNullOrWhiteSpace(searchText))
+			return menuSectionItems;
+
+		return menuSectionItems.Where(x => x.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+		// var selectList = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionItemSelectList, new { });
+		// return selectList;
+	}
+}
