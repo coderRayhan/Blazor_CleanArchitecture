@@ -31,22 +31,37 @@ public class MenuSectionSubItemsWithPaginationQuery : MenuSectionSubItemAdvanced
 public class MenuSectionSubItemsWithPaginationQueryHandler :
          IRequestHandler<MenuSectionSubItemsWithPaginationQuery, PaginatedData<MenuSectionSubItemDto>>
 {
-        private readonly IApplicationDbContext _context;
+        private readonly ISqlConnectionFactory _connectionFactory;
 
         public MenuSectionSubItemsWithPaginationQueryHandler(
-            IApplicationDbContext context)
+            ISqlConnectionFactory connectionFactory)
         {
-            _context = context;
+            _connectionFactory = connectionFactory;
         }
 
         public async Task<PaginatedData<MenuSectionSubItemDto>> Handle(MenuSectionSubItemsWithPaginationQuery request, CancellationToken cancellationToken)
         {
-           var data = await _context.MenuSectionSubItems.Include(x => x.MenuSectionItem).ThenInclude(x => x.MenuSection).OrderBy($"{request.OrderBy} {request.SortDirection}")
-                                                   .ProjectToPaginatedDataAsync(request.Specification, 
-                                                                                request.PageNumber, 
-                                                                                request.PageSize, 
-                                                                                MenuSectionSubItemMapper.ToDto, 
-                                                                                cancellationToken);
+            var sql = $"""
+                       SELECT
+                           MSSI.Id,
+                           MSSI.MenuSectionItemId,
+                           MSSI.Title,
+                           MSSI.Href,
+                           MSSI.Roles,
+                           MSSI.PageStatus,
+                           MSSI.[Target],
+                           MSSI.Created,
+                           MSSI.CreatedBy,
+                           MSSI.LastModified,
+                           MSSI.LastModifiedBy,
+                           MSSI.SerialNo,
+                           MSI.Title MenuSectionItemTitle
+                       FROM MenuSectionSubItems MSSI
+                       INNER JOIN MenuSectionItems MSI ON MSSI.MenuSectionItemId = MSI.Id
+                       """;
+            var data = await PaginatedData<MenuSectionSubItemDto>.CreateAsync(_connectionFactory.GetOpenConnection(),
+                sql, request);
+            
             return data;
         }
 }

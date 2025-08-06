@@ -63,13 +63,7 @@ public class LookupDetailsWithPaginationQueryHandler :
             LEFT JOIN LookupDetails LD2 ON LD.LookupDetailId = LD2.Id
             """;
 
-        var datata = await PaginatedData<LookupDetailDto>.CreateAsync(_sqlConnectionFactory.GetOpenConnection(), sql, request);
-           var data = await _context.LookupDetails.Include("Lookup").OrderBy($"{request.OrderBy} {request.SortDirection}")
-                                                   .ProjectToPaginatedDataAsync(request.Specification,
-                                                                                request.PageNumber,
-                                                                                request.PageSize,
-                                                                                LookupDetailMapper.ToDto,
-                                                                                cancellationToken);
-        return datata;
+        var data = await PaginatedData<LookupDetailDto>.CreateAsync(_sqlConnectionFactory.GetOpenConnection(), sql, request);
+        return data;
     }
 }

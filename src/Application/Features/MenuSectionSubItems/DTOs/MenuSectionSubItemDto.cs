@@ -37,6 +37,8 @@ public class MenuSectionSubItemDto
     public int Id { get; set; }
     [Description("Menu section item")]
     public int MenuSectionItemId { get; set; }
+    [Description("Menu Section Item")] 
+    public string MenuSectionItemTitle { get; set; }
     [Description("Title")]
     public string? Title { get; set; }
     [Description("Href")]
@@ -49,7 +51,7 @@ public class MenuSectionSubItemDto
     public string? Target { get; set; }
     [Description("Serial Number")]
     public int SerialNo { get; set; }
-    [Description("Menu section item")]
+    //[Description("Menu section item")]
     public MenuSectionItemDto MenuSectionItem { get; set; } = new();
 
 

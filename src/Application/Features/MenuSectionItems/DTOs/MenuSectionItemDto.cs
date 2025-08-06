@@ -36,8 +36,9 @@ public class MenuSectionItemDto
 {
     [Description("Id")]
     public int Id { get; set; }
-        [Description("Menu section id")]
+    [Description("Menu section id")]
     public int MenuSectionId {get;set;} 
+    [Description("Menu Section")] public string MenuSectionTitle { get; set; }
     [Description("Title")]
     public string? Title {get;set;} 
     [Description("Icon")]
@@ -54,7 +55,7 @@ public class MenuSectionItemDto
     public bool IsParent {get;set;}
     [Description("Serial Number")]
     public int SerialNo { get; set; }
-    [Description("Menu section")]
+    //[Description("Menu section")]
     public MenuSectionDto MenuSection { get; set; } = new();
 
     public List<MenuSectionSubItemDto> MenuItems {get; set;}
