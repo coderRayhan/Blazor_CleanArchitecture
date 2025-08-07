@@ -124,7 +124,7 @@ else
 
     [EditorRequired] [Parameter] public bool DrawerOpen { get; set; }
 
-    private IEnumerable<MenuSectionModel> MenuSections => MenuService.Features;
+    // private IEnumerable<MenuSectionModel> MenuSections => MenuService.Features;
     private IEnumerable<MenuSectionDto> MenuSectionss => MenuService.Features1;
     [EditorRequired] [Parameter] public string[] Roles { get; set; } = Array.Empty<string>();
 
