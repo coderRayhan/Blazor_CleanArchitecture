@@ -12,32 +12,54 @@ internal sealed class GetMenuItemsQueryHandler(ISqlConnectionFactory sqlConnecti
 {
     public async Task<Result<List<MenuSectionDto>>> Handle(GetMenuItemsQuery request, CancellationToken cancellationToken)
     {
-        var sql = """
-            SELECT Id, Title, Roles, SerialNo FROM MenuSections;
-            SELECT Id, MenuSectionId, Title, Icon, Href, Target, Roles, PageStatus, IsParent, SerialNo FROM MenuSectionItems;
-            SELECT Id, MenuSectionItemId, Title, Href, Roles, PageStatus, Target, SerialNo FROM MenuSectionSubItems;
-            """;
+        var sql = $"""
+                   SELECT
+                       MS.Id, MS.Title, MS.Roles MenuSectionRoles, MS.SerialNo MenuSectionSerialNo, 
+                       MSI.Title MenuSectionItemTitle, MSI.Icon, MSI.Href MenuSectionItemHref, MSI.IsParent, MSI.PageStatus MenuSectionItemPageStatus, MSI.SerialNo MenuSectionItemSerialNo,
+                       MSSI.Id MenuSectionSubItemId, MSSI.MenuSectionItemId, MSSI.Title MenuSectionSubItemTitle, MSSI.Href MenuSectionSubItemHref, MSSI.Roles MenuSectionSubItemRoles,
+                       MSSI.PageStatus MenuSectionSubItemPageStatus, MSSI.SerialNo MenuSectionSubItemSerialNo
+                   FROM MenuSections MS
+                   LEFT JOIN MenuSectionItems MSI ON MS.Id = MSI.MenuSectionId
+                   LEFT JOIN MenuSectionSubItems MSSI ON MSI.Id = MSSI.MenuSectionItemId
+                   """;
+        
         var connection = sqlConnection.GetOpenConnection();
-
-        using var datasets = connection.QueryMultiple(sql);
-
-        var menuSections = (await datasets.ReadAsync<MenuSectionDto>()).ToList();
-        var menuSectionItems = (await datasets.ReadAsync<MenuSectionItemDto>()).ToList();
-        var menuSectionSubItems = (await datasets.ReadAsync<MenuSectionSubItemDto>()).ToList();
-
-        var menuSectionItemsLookup = menuSectionItems.ToLookup(item => item.MenuSectionId);
-        var menuSectionSubItemsLookup = menuSectionSubItems.ToLookup(subItem => subItem.MenuSectionItemId);
-
-        foreach (var section in menuSections)
-        {
-            section.SectionItems = [.. menuSectionItemsLookup[section.Id].OrderBy(x => x.SerialNo)];
-
-            foreach (var item in section.SectionItems)
+        
+        var rows = connection.Query<MenuItemDto>(sql);
+        var result = rows
+            .GroupBy(r => new { r.Id, r.Title, r.MenuSectionRoles, r.MenuSectionSerialNo })
+            .Select(sectionGroup => new MenuSectionDto
             {
-                item.MenuItems = [.. menuSectionSubItemsLookup[item.Id].OrderBy(x => x.SerialNo)];
-            }
-        }
+                Id = sectionGroup.Key.Id,
+                Title = sectionGroup.Key.Title,
+                Roles = sectionGroup.Key.MenuSectionRoles,
+                SerialNo = sectionGroup.Key.MenuSectionSerialNo,
+                SectionItems = sectionGroup
+                    .GroupBy(r => new { r.MenuSectionItemTitle, r.Icon, r.MenuSectionItemHref, r.IsParent, r.MenuSectionItemPageStatus, r.MenuSectionItemSerialNo })
+                    .Select(itemGroup => new MenuSectionItemDto
+                    {
+                        Title = itemGroup.Key.MenuSectionItemTitle,
+                        Icon = itemGroup.Key.Icon,
+                        Href = itemGroup.Key.MenuSectionItemHref,
+                        IsParent = itemGroup.Key.IsParent,
+                        PageStatus = itemGroup.Key.MenuSectionItemPageStatus,
+                        SerialNo = itemGroup.Key.MenuSectionItemSerialNo,
+                        MenuItems = itemGroup
+                            .Where(r => r.MenuSectionSubItemId != null)
+                            .Select(r => new MenuSectionSubItemDto
+                            {
+                                Id = r.MenuSectionSubItemId,
+                                MenuSectionItemId = r.MenuSectionItemId,
+                                Title = r.MenuSectionSubItemTitle,
+                                Href = r.MenuSectionSubItemHref,
+                                Roles = r.MenuSectionSubItemRoles,
+                                PageStatus = r.MenuSectionSubItemPageStatus,
+                                SerialNo = r.MenuSectionSubItemSerialNo
+                            }).ToList()
+                    }).ToList()
+            })
+            .ToList();
 
-        return Result<List<MenuSectionDto>>.Success([.. menuSections.OrderBy(x => x.SerialNo)]);
+        return Result<List<MenuSectionDto>>.Success([.. result]);
     }
 }

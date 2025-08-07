@@ -24,7 +24,7 @@
     </MudDrawerHeader>
 
     <MudNavMenu>
-        @foreach (var section in MenuSectionss.Where(x => x.Roles == null || x.Roles.Any(x => Roles.Contains(x))))
+        @foreach (var section in MenuSections.Where(x => x.Roles == null || x.Roles.Any(x => Roles.Contains(x))))
         {
             @if (section is not null)
             {
@@ -39,12 +39,12 @@
 
                 @if (section.SectionItems is not null)
                 {
-                    @foreach (var sectionItem in section.SectionItems.Where(x => x.Roles == null || x.Roles.Any(x => Roles.Contains(x))))
+                    @foreach (var sectionItem in section.SectionItems.OrderBy(e => e.SerialNo).Where(x => x.Roles == null || x.Roles.Any(x => Roles.Contains(x))))
                     {
                         @if (sectionItem is { IsParent: true, MenuItems: not null })
                         {
                             <MudNavGroup Icon="@sectionItem.Icon" Title="@L[sectionItem.Title]" Expanded="Expanded(sectionItem)">
-                                @foreach (var menuItem in sectionItem.MenuItems.Where(x => x.Roles == null || x.Roles.Any(x => Roles.Contains(x))))
+                                @foreach (var menuItem in sectionItem.MenuItems.OrderBy(e => e.SerialNo).Where(x => x.Roles == null || x.Roles.Any(x => Roles.Contains(x))))
                                 {
                                     <MudNavLink Disabled="@(menuItem.PageStatus != Domain.Common.Enums.PageStatus.Completed)" Href="@(menuItem.Href)" Target="@(menuItem.Target)" Match="NavLinkMatch.Prefix">
                                         <div class="d-flex">
@@ -124,8 +124,7 @@ else
 
     [EditorRequired] [Parameter] public bool DrawerOpen { get; set; }
 
-    // private IEnumerable<MenuSectionModel> MenuSections => MenuService.Features;
-    private IEnumerable<MenuSectionDto> MenuSectionss => MenuService.Features1;
+    private IEnumerable<MenuSectionDto> MenuSections => MenuService.Features;
     [EditorRequired] [Parameter] public string[] Roles { get; set; } = Array.Empty<string>();
 
     private bool Expanded(MenuSectionItemDto menu)
