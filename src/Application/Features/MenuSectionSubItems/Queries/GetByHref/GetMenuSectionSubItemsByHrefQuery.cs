@@ -74,11 +74,11 @@ public class GetMenuSectionSubItemsByHrefQueryHandler
             })
             .ToList();
 
-        var data = await _context.MenuSectionSubItems
-            .Include(e => e.MenuSectionItem)
-            .ThenInclude(e => e.MenuSection)
-            .ProjectTo()!
-            .FirstOrDefaultAsync(e => e!.Href == request.Href, cancellationToken);
-        return data!;
+        // var data = await _context.MenuSectionSubItems
+        //     .Include(e => e.MenuSectionItem)
+        //     .ThenInclude(e => e.MenuSection)
+        //     .ProjectTo()!
+        //     .FirstOrDefaultAsync(e => e!.Href == request.Href, cancellationToken);
+        return null!;
     }
 }

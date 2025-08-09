@@ -45,7 +45,7 @@ public class ApplicationDbContextInitializer
         {
             await SeedRolesAsync();
             await SeedUsersAsync();
-            //await SeedMenuSectionsFromJsonFileAsync();
+            await SeedMenuSectionsFromJsonFileAsync();
             await SeedDataAsync();
             _context.ChangeTracker.Clear();
         }
@@ -187,8 +187,8 @@ public class ApplicationDbContextInitializer
 
     private async Task<List<MenuSection>> SeedMenuSectionsFromJsonFileAsync()
     {
-        // if (await _context.MenuSections.AnyAsync())
-        //     return [];
+        if (await _context.MenuSections.AnyAsync())
+            return [];
 
         var srcFolderPath = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)!.Parent!.Parent!.Parent!.Parent!.FullName;
 

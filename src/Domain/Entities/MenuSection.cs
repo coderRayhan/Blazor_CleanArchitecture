@@ -6,4 +6,5 @@ public class MenuSection : BaseAuditableEntity
     public string Title { get; set; } = string.Empty;
     public string[]? Roles { get; set; }
     public int SerialNo { get; set; }
+    public virtual List<MenuSectionItem> MenuSectionItems { get; set; }
 }

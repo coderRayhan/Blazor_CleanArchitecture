@@ -44,7 +44,7 @@ public class MenuSectionSubItemDto
     [Description("Href")]
     public string? Href { get; set; }
     [Description("Roles")]
-    public string[] Roles { get; set; }
+    public string Roles { get; set; }
     [Description("Page status")]
     public PageStatus PageStatus { get; set; } = PageStatus.Completed;
     [Description("Target")]

@@ -10,9 +10,10 @@ public class MenuSectionItem : BaseAuditableEntity
     public string? Icon { get; set; }
     public string? Href { get; set; }
     public string? Target { get; set; }
-    public string[]? Roles { get; set; }
+    public string? Roles { get; set; }
     public PageStatus PageStatus { get; set; } = PageStatus.Completed;
     public bool IsParent { get; set; }
     public int SerialNo { get; set; }
-    public virtual MenuSection MenuSection { get; set; }
+    // public virtual MenuSection MenuSection { get; set; }
+    public virtual List<MenuSectionSubItem> MenuSectionSubItems { get; set; }
 }

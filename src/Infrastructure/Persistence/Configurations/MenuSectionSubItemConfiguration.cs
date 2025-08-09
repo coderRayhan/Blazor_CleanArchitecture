@@ -27,7 +27,7 @@ public class MenuSectionSubItemConfiguration : IEntityTypeConfiguration<MenuSect
     builder.HasIndex(x => x.PageStatus); 
     builder.Property(t => t.PageStatus).HasConversion<string>().HasMaxLength(50); 
     builder.Property(x => x.Target).HasMaxLength(255); 
-    builder.HasOne(x => x.MenuSectionItem).WithMany().HasForeignKey(x => x.MenuSectionItemId); 
+    // builder.HasOne(x => x.MenuSectionItem).WithMany().HasForeignKey(x => x.MenuSectionItemId); 
 
         builder.Ignore(e => e.DomainEvents);
     }

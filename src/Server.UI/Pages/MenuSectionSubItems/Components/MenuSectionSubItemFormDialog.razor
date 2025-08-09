@@ -1,12 +1,17 @@
 ﻿@using CleanArchitecture.Blazor.Application.Common.Constants
+@using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity
 @using CleanArchitecture.Blazor.Application.Features.Common.Queries
 @using CleanArchitecture.Blazor.Application.Features.MenuSectionItems.DTOs
 @using CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.Commands.AddEdit
-@using CleanArchitecture.Blazor.Domain.Common.Enums
+@using CleanArchitecture.Blazor.Server.UI.Models.NavigationMenu
+@using CleanArchitecture.Blazor.Server.UI.Services.Navigation
+@using PageStatus = CleanArchitecture.Blazor.Domain.Common.Enums.PageStatus
 
 @inherits MudComponentBase
 @inject IValidationService Validator
 @inject IStringLocalizer<MenuSectionSubItems> L
+@inject IRoleService _roleService;
+@inject FormService _formService;
 
 <MudDialog>
 	<DialogContent>
@@ -48,12 +53,16 @@
 					</MudTextField>
 				</MudItem>
 				<MudItem xs="12" md="6">
-					<MudTextField Label="@L[model.GetMemberDescription(x=>x.Href)]"
-								  @bind-Value="model.Href"
-								  For="@(() => model.Href)"
-								  Required="false"
-								  RequiredError="@L["href is required!"]">
-					</MudTextField>
+                    <MudAutocomplete T="Form"
+                                     Label="Href"
+                                     @bind-Value="selectedForm"
+                                     CoerceText="true"
+                                     ToStringFunc="@(m => m== null ? string.Empty : m.Name)"
+                                     SearchFunc="SearchForm"
+                                     ResetValueOnEmptyText="true"
+                                     Clearable="true"
+                                     Required="true"
+                                     RequiredError="Href is required!"/>
 				</MudItem>
 				<MudItem xs="12" md="6">
 					<MudEnumSelect TEnum="Nullable<PageStatus>"
@@ -80,7 +89,17 @@
 								  RequiredError="@L["Serial is required!"]">
 					</MudNumericField>
 				</MudItem>
-
+                <MudItem xs="12" md="12">
+                    <MudText Typo="Typo.caption" Color="Color.Secondary">Assign roles to this menu item</MudText>
+                    <MudChipSet T="string" @bind-SelectedValues="selectedRoles"
+                                SelectionMode="SelectionMode.MultiSelection"
+                                Filter="true" CheckMark="true">
+                        @foreach (var role in allRoles)
+                        {
+                        <MudChip Text="@role" Value="@role" Color="Color.Primary" Variant="@Variant.Text"/>
+                        }
+                    </MudChipSet>
+                </MudItem>
 			</MudGrid>
 		</MudForm>
 	</DialogContent>
@@ -100,26 +119,35 @@
 	AddEditMenuSectionSubItemCommandValidator _modelValidator = new();
 	[EditorRequired][Parameter] public AddEditMenuSectionSubItemCommand model { get; set; } = new();
 	[Inject] ISelectListService<MenuSectionItemDto> _selectListService { get; set; }
-
 	private MenuSectionItemDto selectedMenuSectionItem = new();
 	private IEnumerable<MenuSectionItemDto> menuSectionItems = new List<MenuSectionItemDto>();
+    private List<string> allRoles;
+    private IReadOnlyCollection<string> selectedRoles; // to bind selected chips
+    private Form selectedForm;
+    private List<Form> formList = [];
 
 	protected override async Task OnInitializedAsync()
 	{
+        allRoles = _roleService.GetAllRoles();
 		menuSectionItems = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionItemSelectList, new { });
-
+        formList = _formService.GetFormsList();
+        if (!string.IsNullOrWhiteSpace(model.Roles))
+        {
+            selectedRoles = model.Roles.Split(',').ToList();
+        }
 		if (model.Id > 0)
 		{
 			selectedMenuSectionItem = menuSectionItems.FirstOrDefault(e => e.Id == model.MenuSectionItemId)!;
+            selectedForm = formList.FirstOrDefault(e => e.Url == model.Href)!;
 		}
-		// selectedMenuSectionItem = menuSectionItems
-		// .FirstOrDefault(e => e.Id == model.MenuSectionItemId) ?? new SelectListDto();
 	}
 
 	async Task Submit()
 	{
 		try
 		{
+            model.Href = selectedForm.Url;
+            model.Roles = selectedRoles is not null ? string.Join(',', selectedRoles) : null;
 			_saving = true;
 			await _form!.Validate().ConfigureAwait(false);
 			if (!_form!.IsValid)
@@ -186,8 +214,13 @@
 			return menuSectionItems;
 
 		return menuSectionItems.Where(x => x.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-
-		// var selectList = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionItemSelectList, new { });
-		// return selectList;
 	}
+    
+    private async Task<IEnumerable<Form>> SearchForm(string searchText, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return formList.AsEnumerable();
+
+        return formList.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
 }

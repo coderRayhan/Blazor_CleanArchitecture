@@ -28,7 +28,7 @@ public class MenuSectionItemConfiguration : IEntityTypeConfiguration<MenuSection
     builder.Property(x => x.Target).HasMaxLength(255); 
     builder.HasIndex(x => x.PageStatus); 
     builder.Property(t => t.PageStatus).HasConversion<string>().HasMaxLength(50); 
-    builder.HasOne(x => x.MenuSection).WithMany().HasForeignKey(x => x.MenuSectionId); 
+    // builder.HasOne(x => x.MenuSection).WithMany().HasForeignKey(x => x.MenuSectionId); 
 
         builder.Ignore(e => e.DomainEvents);
     }

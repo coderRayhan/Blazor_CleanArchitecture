@@ -1,4 +1,6 @@
 ﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BlazorDownloadFile;
 using CleanArchitecture.Blazor.Infrastructure.Constants.Localization;
 using CleanArchitecture.Blazor.Server.UI.Hubs;
@@ -82,7 +84,12 @@ public static class DependencyInjection
             .AddHangfireServer()
             .AddMvc();
 
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
 
         services.AddScoped<IApplicationHubWrapper, ServerHubWrapper>()
             .AddSignalR(options=>options.MaximumReceiveMessageSize=64*1024);
@@ -107,6 +114,7 @@ public static class DependencyInjection
             .AddBlazorDownloadFile()
             .AddScoped<IUserPreferencesService, UserPreferencesService>()
             .AddScoped<IMenuService, MenuService>()
+            .AddSingleton<FormService>()
             .AddScoped<IBreadcrumbService, BreadcrumbService>()
             .AddScoped<InMemoryNotificationService>()
             .AddScoped<INotificationService>(sp =>

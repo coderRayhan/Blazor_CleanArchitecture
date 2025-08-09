@@ -18,7 +18,7 @@ public class MenuItemDto
     public int MenuSectionItemId { get; set; }
     public string MenuSectionSubItemTitle { get; set; }
     public string MenuSectionSubItemHref { get; set; }
-    public string[] MenuSectionSubItemRoles { get; set; }
+    public string MenuSectionSubItemRoles { get; set; }
     public PageStatus MenuSectionSubItemPageStatus { get; set; }
     public int MenuSectionSubItemSerialNo { get; set; }
 }

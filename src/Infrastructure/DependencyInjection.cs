@@ -170,6 +170,7 @@ public static class DependencyInjection
             .AddScoped<IExcelService, ExcelService>()
             .AddScoped<IUploadService, UploadService>()
             .AddScoped<IPDFService, PDFService>()
+            .AddScoped<IRoleService, RoleService>()
             .AddScoped<ISqlConnectionFactory>(p =>
             {
                 var dbSettings = p.GetRequiredService<IOptions<DatabaseSettings>>().Value;
