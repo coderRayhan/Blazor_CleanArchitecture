@@ -1,0 +1,53 @@
+@using CleanArchitecture.Blazor.Application.Features.Common.DTOs
+@typeparam TItem where TItem : CleanArchitecture.Blazor.Application.Common.BaseDto
+<MudAutocomplete T="TItem"
+                 Value="Value"
+                 Variant="Variant"
+                 Label="@Label"
+                 CoerceText="true"
+                 ToStringFunc="ToStringFunc"
+                 SearchFunc="Search"
+                 ResetValueOnEmptyText="true"
+                 Clearable="true"
+                 Required="@Required"
+                 RequiredError="@RequiredMessage" ValueChanged="@ValueChanged"></MudAutocomplete>
+@code {
+    [Inject] private ISelectListService<TItem> SelectListService { get; set; } = default!;
+    [Parameter] public TItem? Value { get; set; }
+    [Parameter] public EventCallback<TItem> ValueChanged { get; set; }
+    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public string RequiredMessage { get; set; } = string.Empty;
+
+    [Parameter] public string Query { get; set; } = string.Empty;
+    [Parameter] public object? Parameters { get; set; }
+    [Parameter] public int IdValue { get; set; }
+
+    [Parameter, EditorRequired] public Func<TItem?, string> ToStringFunc { get; set; } = default!;
+    private IEnumerable<TItem> items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Query))
+        {
+            items = await SelectListService.GetSelectList(Query, Parameters);
+            if (IdValue > 0 && items is not null)
+            {
+                Value = items.FirstOrDefault(e => e.Id == IdValue);
+                await ValueChanged.InvokeAsync(Value);
+            }
+        }
+    }
+
+    private Task<IEnumerable<TItem>> Search(string value, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(items);
+
+        var filtered = items.Where(x => ToStringFunc(x).Contains(value, StringComparison.OrdinalIgnoreCase));
+        return Task.FromResult(filtered);
+    }
+
+}
