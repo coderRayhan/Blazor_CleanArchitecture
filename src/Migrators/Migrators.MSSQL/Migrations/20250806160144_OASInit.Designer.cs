@@ -4,6 +4,7 @@ using CleanArchitecture.Blazor.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchitecture.Blazor.Migrators.MSSQL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250806160144_OASInit")]
+    partial class OASInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,8 +309,8 @@ namespace CleanArchitecture.Blazor.Migrators.MSSQL.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Icon")
-                        .HasMaxLength(2147483647)
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("IsParent")
                         .HasColumnType("bit");
@@ -327,9 +330,8 @@ namespace CleanArchitecture.Blazor.Migrators.MSSQL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Roles")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                    b.PrimitiveCollection<string>("Roles")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SerialNo")
                         .HasColumnType("int");
@@ -386,9 +388,8 @@ namespace CleanArchitecture.Blazor.Migrators.MSSQL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Roles")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                    b.PrimitiveCollection<string>("Roles")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SerialNo")
                         .HasColumnType("int");
@@ -856,20 +857,24 @@ namespace CleanArchitecture.Blazor.Migrators.MSSQL.Migrations
 
             modelBuilder.Entity("CleanArchitecture.Blazor.Domain.Entities.MenuSectionItem", b =>
                 {
-                    b.HasOne("CleanArchitecture.Blazor.Domain.Entities.MenuSection", null)
-                        .WithMany("MenuSectionItems")
+                    b.HasOne("CleanArchitecture.Blazor.Domain.Entities.MenuSection", "MenuSection")
+                        .WithMany()
                         .HasForeignKey("MenuSectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MenuSection");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Blazor.Domain.Entities.MenuSectionSubItem", b =>
                 {
-                    b.HasOne("CleanArchitecture.Blazor.Domain.Entities.MenuSectionItem", null)
-                        .WithMany("MenuSectionSubItems")
+                    b.HasOne("CleanArchitecture.Blazor.Domain.Entities.MenuSectionItem", "MenuSectionItem")
+                        .WithMany()
                         .HasForeignKey("MenuSectionItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MenuSectionItem");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Blazor.Domain.Identity.ApplicationRoleClaim", b =>
@@ -948,16 +953,6 @@ namespace CleanArchitecture.Blazor.Migrators.MSSQL.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Blazor.Domain.Entities.MenuSection", b =>
-                {
-                    b.Navigation("MenuSectionItems");
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Blazor.Domain.Entities.MenuSectionItem", b =>
-                {
-                    b.Navigation("MenuSectionSubItems");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Blazor.Domain.Identity.ApplicationRole", b =>

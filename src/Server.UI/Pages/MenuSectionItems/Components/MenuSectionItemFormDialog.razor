@@ -1,4 +1,5 @@
 ﻿@using CleanArchitecture.Blazor.Application.Common.Constants
+@using CleanArchitecture.Blazor.Application.Features.Common.DTOs
 @using CleanArchitecture.Blazor.Application.Features.Common.Queries
 @using CleanArchitecture.Blazor.Application.Features.MenuSectionItems.Commands.AddEdit
 @using CleanArchitecture.Blazor.Application.Features.MenuSections.DTOs
@@ -15,19 +16,29 @@
 			<MudGrid>
 				@*TODO: define mudform that should be edit fields, for example:*@
 				<MudItem xs="12" md="6">
-                    <MudAutocomplete T="MenuSectionDto"
-                                     Label="Menu Section"
-                                     @bind-Value="selectedItem"
-                                     CoerceText="true"
-                                     ToStringFunc="@(m => m == null ? string.Empty : m.Title)"
-                                     SearchFunc="SearchItems"
-                                     ResetValueOnEmptyText="true"
-                                     Clearable="true"
-                                     Required="true"
-                                     RequiredError="Please select a menu section."
-                                     Validation="@(new Func<MenuSectionDto, bool>(item => item != null && item.Id > 0))"/>
+                    @* <MudAutocomplete T="MenuSectionDto" *@
+                    @*                  Label="Menu Section" *@
+                    @*                  @bind-Value="selectedItem" *@
+                    @*                  CoerceText="true" *@
+                    @*                  ToStringFunc="@(m => m == null ? string.Empty : m.Title)" *@
+                    @*                  SearchFunc="SearchItems" *@
+                    @*                  ResetValueOnEmptyText="true" *@
+                    @*                  Clearable="true" *@
+                    @*                  Required="true" *@
+                    @*                  RequiredError="Please select a menu section." *@
+                    @*                  Validation="@(new Func<MenuSectionDto, bool>(item => item != null && item.Id > 0))"/> *@
 
-				</MudItem>
+                    <CommonAutoComplete TItem="CommonDropdownDto"
+                                        IdValue="model!.MenuSectionId"
+                                        Label="Menu Section"
+                                        Value="selectedItem"
+                                        Query="@SelectListConstants.GetMenuSectionSelectList"
+                                        ToStringFunc="@(m => m?.Name ?? string.Empty)"
+                                        Required="true"
+                                        RequiredMessage="Please select a menu section."
+                                        ValueChanged="OnChangeMenuSection"></CommonAutoComplete>
+
+                </MudItem>
 				<MudItem xs="12" md="6">
 					<MudTextField Label="@L[model.GetMemberDescription(x=>x.Title)]"
 								  @bind-Value="model.Title"
@@ -98,7 +109,7 @@
 </MudDialog>
 
 @code {
-	private MenuSectionDto selectedItem;
+	private CommonDropdownDto selectedItem;
 	private IconItem selectedIcon;
 	private List<IconItem> allIcons = new();
 	MudForm? _form;
@@ -108,46 +119,16 @@
 	IMudDialogInstance MudDialog { get; set; } = default!;
 	AddEditMenuSectionItemCommandValidator _modelValidator = new();
 	[EditorRequired][Parameter] public AddEditMenuSectionItemCommand model { get; set; } = new();
-	[Inject] ISelectListService<MenuSectionDto> _selectListService { get; set; }
+	[Inject] ISelectListService<CommonDropdownDto> _selectListService { get; set; }
 
-	private IEnumerable<MenuSectionDto> menuSections = new List<MenuSectionDto>();
+	private IEnumerable<CommonDropdownDto> menuSections = new List<CommonDropdownDto>();
 
 	protected override async Task OnInitializedAsync()
-	{
-		menuSections = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionSelectList, new { });
-		selectedItem = menuSections
-		.FirstOrDefault(e => e.Id == model.MenuSectionId) ?? new MenuSectionDto();
-
+    {
+        await GetMenuSectionDropdownList();
 		//populate the list of icons
-		allIcons = typeof(Icons.Material.Filled)
-		.GetFields()
-		.Select(field => new IconItem
-			{
-				Name = field.Name,
-				Value = field.GetValue(null)?.ToString() ?? string.Empty
-			})
-		.ToList();
-
-        if (model.Id > 0)
-        {
-            selectedIcon = allIcons.Find(e => model.Icon.Equals(e.Value));
-        }
-	}
-
-	private async Task<IEnumerable<MenuSectionDto>> SearchItems(string searchText, CancellationToken cancellationToken)
-	{
-		if (string.IsNullOrWhiteSpace(searchText))
-			return menuSections.AsEnumerable();
-
-		return menuSections.Where(x => x.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-	}
-
-	// private void OnValueChanged(SelectListDto value)
-	// {
-	//     selectedItem = value;
-	//     // Assign the selected item's Id to MenuSectionId
-	//     model.MenuSectionId = value?.Id ?? 0; // Assuming 0 is a default value
-	// }
+        GetIconSelectList();
+    }
 
 	async Task Submit()
 	{
@@ -222,4 +203,35 @@
 		selectedIcon = icon;
 		model.Icon = icon.Value;
 	}
+    
+    private void OnChangeMenuSection(CommonDropdownDto menuSection)
+    {
+        selectedItem = menuSection;
+    }
+    
+    private async Task GetMenuSectionDropdownList()
+    {
+        menuSections = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionSelectList, new { });
+        if (model.Id > 0)
+        {
+            selectedItem = menuSections.FirstOrDefault(e => e.Id == model.MenuSectionId) ?? new CommonDropdownDto();
+        }
+    }
+
+    private void GetIconSelectList()
+    {
+        allIcons = typeof(Icons.Material.Filled)
+            .GetFields()
+            .Select(field => new IconItem
+            {
+                Name = field.Name,
+                Value = field.GetValue(null)?.ToString() ?? string.Empty
+            })
+            .ToList();
+
+        if (model.Id > 0)
+        {
+            selectedIcon = allIcons.Find(e => model.Icon.Equals(e.Value));
+        }
+    }
 }

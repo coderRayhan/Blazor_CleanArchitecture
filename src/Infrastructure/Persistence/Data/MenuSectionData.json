@@ -1,22 +1,207 @@
- [
-	{
-		"id" : 3,
-		"title" : "Management",
-		"roles" : null,
-		"created" : null,
-		"created_by" : null,
-		"last_modified" : "2024-12-24T05:21:29.109Z",
-		"last_modified_by" : "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
-		"serial_no" : 2
-	},
-	{
-		"id" : 3003,
-		"title" : "Application",
-		"roles" : null,
-		"created" : null,
-		"created_by" : null,
-		"last_modified" : "2024-12-24T05:00:56.992Z",
-		"last_modified_by" : "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
-		"serial_no" : 1
-	}
+﻿[
+  {
+    "title": "Management",
+    "roles": null,
+    "created": null,
+    "createdBy": null,
+    "lastModified": "2024-12-24T11:21:29.1096474",
+    "lastModifiedBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+    "serialNo": 2,
+    "menuSectionItems": [
+      {
+        "title": "Authorization",
+        "icon": "<g><path d=\"M0,0h24v24H0V0z\" fill=\"none\"/></g><g><g><circle cx=\"10\" cy=\"8\" r=\"4\"/><path d=\"M10.67,13.02C10.45,13.01,10.23,13,10,13c-2.42,0-4.68,0.67-6.61,1.82C2.51,15.34,2,16.32,2,17.35V20h9.26 C10.47,18.87,10,17.49,10,16C10,14.93,10.25,13.93,10.67,13.02z\"/><path d=\"M20.75,16c0-0.22-0.03-0.42-0.06-0.63l1.14-1.01l-1-1.73l-1.45,0.49c-0.32-0.27-0.68-0.48-1.08-0.63L18,11h-2l-0.3,1.49 c-0.4,0.15-0.76,0.36-1.08,0.63l-1.45-0.49l-1,1.73l1.14,1.01c-0.03,0.21-0.06,0.41-0.06,0.63s0.03,0.42,0.06,0.63l-1.14,1.01 l1,1.73l1.45-0.49c0.32,0.27,0.68,0.48,1.08,0.63L16,21h2l0.3-1.49c0.4-0.15,0.76-0.36,1.08-0.63l1.45,0.49l1-1.73l-1.14-1.01 C20.72,16.42,20.75,16.22,20.75,16z M17,18c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S18.1,18,17,18z\"/></g></g>",
+        "href": null,
+        "target": null,
+        "roles": null,
+        "pageStatus": 3,
+        "isParent": true,
+        "created": "2024-12-22T10:46:18.1607381",
+        "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "lastModified": "2024-12-24T11:21:29.1096474",
+        "lastModifiedBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "serialNo": 2,
+        "menuSectionSubItems": [
+          {
+            "title": "Users",
+            "href": "/identity/users",
+            "roles": "SuperAdmin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:22:36.6301018",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 1
+          },
+          {
+            "title": "Roles",
+            "href": "/identity/roles",
+            "roles": "SuperAdmin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:23:04.1685682",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 2
+          },
+          {
+            "title": "Profile",
+            "href": "/user/profile",
+            "roles": "SuperAdmin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:23:32.4507927",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 3
+          }
+        ]
+      },
+      {
+        "title": "Menu Setup",
+        "icon": "<path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z\"/>",
+        "href": null,
+        "target": null,
+        "roles": null,
+        "pageStatus": 3,
+        "isParent": true,
+        "created": "2024-12-22T11:02:24.8614638",
+        "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "lastModified": "2024-12-24T11:21:06.5966901",
+        "lastModifiedBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "serialNo": 3,
+        "menuSectionSubItems": [
+          {
+            "title": "Menu Section",
+            "href": "/system/MenuSections",
+            "roles": "SuperAdmin,Admin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:26:35.1226045",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 1
+          },
+          {
+            "title": "Menu Section Item",
+            "href": "/system/MenuSectionItems",
+            "roles": "SuperAdmin,Admin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:26:52.9506849",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 2
+          },
+          {
+            "title": "Menu Item",
+            "href": "/system/menuItems",
+            "roles": "SuperAdmin,Admin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:27:16.8164751",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 3
+          }
+        ]
+      },
+      {
+        "title": "System",
+        "icon": "<g><rect fill=\"none\" height=\"24\" width=\"24\" x=\"0\"/></g><g><g><g><path d=\"M20,18c1.1,0,2-0.9,2-2V6c0-1.1-0.9-2-2-2H4C2.9,4,2,4.9,2,6v10c0,1.1,0.9,2,2,2H0v2h24v-2H20z M4,6h16v10H4V6z\"/></g></g></g>",
+        "href": null,
+        "target": null,
+        "roles": null,
+        "pageStatus": 3,
+        "isParent": true,
+        "created": "2024-12-22T11:06:58.5793444",
+        "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "lastModified": "2024-12-24T10:59:31.1360454",
+        "lastModifiedBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "serialNo": 1,
+        "menuSectionSubItems": [
+          {
+            "title": "Picklist",
+            "href": "/system/picklistset",
+            "roles": null,
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:24:07.8516788",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 1
+          },
+          {
+            "title": "Audit Trails",
+            "href": "/system/audittrails",
+            "roles": null,
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:24:30.7708410",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 2
+          },
+          {
+            "title": "Logs",
+            "href": "/system/logs",
+            "roles": "SuperAdmin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:25:00.8245773",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 3
+          },
+          {
+            "title": "Jobs",
+            "href": "/jobs",
+            "roles": "SuperAdmin",
+            "pageStatus": 3,
+            "target": null,
+            "created": "2024-12-24T11:25:28.4683912",
+            "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+            "lastModified": null,
+            "lastModifiedBy": null,
+            "serialNo": 4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Application",
+    "roles": null,
+    "created": null,
+    "createdBy": null,
+    "lastModified": "2024-12-24T11:00:56.9929114",
+    "lastModifiedBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+    "serialNo": 1,
+    "menuSectionItems": [
+      {
+        "title": "Home",
+        "icon": "<path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z\"/>",
+        "href": "/",
+        "target": null,
+        "roles": null,
+        "pageStatus": 3,
+        "isParent": false,
+        "created": "2024-12-22T09:53:55.8246201",
+        "createdBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "lastModified": "2024-12-24T10:57:11.8155868",
+        "lastModifiedBy": "7c011e72-5d66-4aa8-abf1-fac32d84d5aa",
+        "serialNo": 1,
+        "menuSectionSubItems": []
+      }
+    ]
+  }
 ]

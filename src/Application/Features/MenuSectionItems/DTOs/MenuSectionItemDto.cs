@@ -36,8 +36,9 @@ public class MenuSectionItemDto
 {
     [Description("Id")]
     public int Id { get; set; }
-        [Description("Menu section id")]
+    [Description("Menu section id")]
     public int MenuSectionId {get;set;} 
+    [Description("Menu Section")] public string MenuSectionTitle { get; set; }
     [Description("Title")]
     public string? Title {get;set;} 
     [Description("Icon")]
@@ -47,14 +48,14 @@ public class MenuSectionItemDto
     [Description("Target")]
     public string? Target {get;set;} 
     [Description("Roles")]
-    public string[] Roles {get;set;}
+    public string Roles {get;set;}
     [Description("Page status")]
     public PageStatus PageStatus { get; set; } = PageStatus.Completed;
     [Description("Is parent")]
     public bool IsParent {get;set;}
     [Description("Serial Number")]
     public int SerialNo { get; set; }
-    [Description("Menu section")]
+    //[Description("Menu section")]
     public MenuSectionDto MenuSection { get; set; } = new();
 
     public List<MenuSectionSubItemDto> MenuItems {get; set;}

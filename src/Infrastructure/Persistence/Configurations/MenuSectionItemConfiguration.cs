@@ -23,12 +23,12 @@ public class MenuSectionItemConfiguration : IEntityTypeConfiguration<MenuSection
     public void Configure(EntityTypeBuilder<MenuSectionItem> builder)
     {
             builder.Property(x => x.Title).HasMaxLength(255); 
-    builder.Property(x => x.Icon).HasMaxLength(255); 
+    builder.Property(x => x.Icon).HasMaxLength(int.MaxValue); 
     builder.Property(x => x.Href).HasMaxLength(255); 
     builder.Property(x => x.Target).HasMaxLength(255); 
     builder.HasIndex(x => x.PageStatus); 
     builder.Property(t => t.PageStatus).HasConversion<string>().HasMaxLength(50); 
-    builder.HasOne(x => x.MenuSection).WithMany().HasForeignKey(x => x.MenuSectionId); 
+    // builder.HasOne(x => x.MenuSection).WithMany().HasForeignKey(x => x.MenuSectionId); 
 
         builder.Ignore(e => e.DomainEvents);
     }

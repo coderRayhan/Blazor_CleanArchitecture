@@ -132,9 +132,10 @@
 			</CellTemplate>
 		</TemplateColumn>
 		@*TODO: Define the fields that should be displayed in data table*@
-		<PropertyColumn Property="x => x.MenuSectionItem.Title" Title="@L[_currentDto.GetMemberDescription(x=>x.MenuSectionItemId)]" />
+		<PropertyColumn Property="x => x.MenuSectionItemTitle" Title="@L[_currentDto.GetMemberDescription(x=>x.MenuSectionItemTitle)]" />
 		<PropertyColumn Property="x => x.Title" Title="@L[_currentDto.GetMemberDescription(x=>x.Title)]" />
 		<PropertyColumn Property="x => x.Href" Title="@L[_currentDto.GetMemberDescription(x=>x.Href)]" />
+		<PropertyColumn Property="x => x.Roles" Title="@L[_currentDto.GetMemberDescription(x=>x.Roles)]" />
 		<PropertyColumn Property="x => x.PageStatus" Title="@L[_currentDto.GetMemberDescription(x=>x.PageStatus)]">
             <CellTemplate>
                 @if (context.Item.PageStatus == PageStatus.Completed)

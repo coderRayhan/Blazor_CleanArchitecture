@@ -5,6 +5,5 @@ namespace CleanArchitecture.Blazor.Server.UI.Services.Navigation;
 
 public interface IMenuService
 {
-    IEnumerable<MenuSectionModel> Features { get; }
-    IEnumerable<MenuSectionDto> Features1 { get; }
+    IEnumerable<MenuSectionDto> Features { get; }
 }
