@@ -20,15 +20,6 @@
 			<MudGrid>
 				@*TODO: define mudform that should be edit fields, for example:*@
 				<MudItem xs="12" md="6">
-					@* <MudAutocomplete T="MenuSectionItemDto"
-									 Label="Menu Section Item"
-                                     @bind-Value="selectedMenuSectionItem"
-									 CoerceText="true"
-									 ToStringFunc="@(m => m== null ? string.Empty : m.Title)"
-									 SearchFunc="SearchItems"
-									 ResetValueOnEmptyText="true"
-									 Clearable="true" /> *@
-
                     <CommonAutoComplete TItem="CommonDropdownDto"
                                         IdValue="model!.MenuSectionItemId"
                                         Label="Menu Section Item"
