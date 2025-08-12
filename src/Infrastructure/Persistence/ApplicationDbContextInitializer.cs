@@ -120,11 +120,11 @@ public class ApplicationDbContextInitializer
         foreach (var permission in permissions)
         {
             var claim = new Claim(ApplicationClaimTypes.Permission, permission);
-            await _roleManager.AddClaimAsync(administratorRole, claim);
+            await _roleManager.AddClaimAsync(superAdministratorRole, claim);
 
-            if (permission.StartsWith("Permissions.Products"))
+            if (permission.StartsWith("Permissions.MenuSections") || permission.StartsWith("Permissions.MenuSectionItems") || permission.StartsWith("Permissions.MenuSectionSubItems"))
             {
-                await _roleManager.AddClaimAsync(userRole, claim);
+                await _roleManager.AddClaimAsync(administratorRole, claim);
             }
         }
     }

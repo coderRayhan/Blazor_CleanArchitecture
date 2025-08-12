@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "title": "Management",
     "roles": null,
@@ -25,7 +25,7 @@
           {
             "title": "Users",
             "href": "/identity/users",
-            "roles": null,
+            "roles": "SuperAdmin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:22:36.6301018",
@@ -37,7 +37,7 @@
           {
             "title": "Roles",
             "href": "/identity/roles",
-            "roles": null,
+            "roles": "SuperAdmin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:23:04.1685682",
@@ -49,7 +49,7 @@
           {
             "title": "Profile",
             "href": "/user/profile",
-            "roles": null,
+            "roles": "SuperAdmin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:23:32.4507927",
@@ -77,7 +77,7 @@
           {
             "title": "Menu Section",
             "href": "/system/MenuSections",
-            "roles": null,
+            "roles": "SuperAdmin,Admin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:26:35.1226045",
@@ -89,7 +89,7 @@
           {
             "title": "Menu Section Item",
             "href": "/system/MenuSectionItems",
-            "roles": null,
+            "roles": "SuperAdmin,Admin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:26:52.9506849",
@@ -101,7 +101,7 @@
           {
             "title": "Menu Item",
             "href": "/system/menuItems",
-            "roles": null,
+            "roles": "SuperAdmin,Admin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:27:16.8164751",
@@ -153,7 +153,7 @@
           {
             "title": "Logs",
             "href": "/system/logs",
-            "roles": null,
+            "roles": "SuperAdmin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:25:00.8245773",
@@ -165,7 +165,7 @@
           {
             "title": "Jobs",
             "href": "/jobs",
-            "roles": null,
+            "roles": "SuperAdmin",
             "pageStatus": 3,
             "target": null,
             "created": "2024-12-24T11:25:28.4683912",
