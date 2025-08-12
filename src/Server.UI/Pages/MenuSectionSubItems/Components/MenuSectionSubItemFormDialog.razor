@@ -1,5 +1,6 @@
 ﻿@using CleanArchitecture.Blazor.Application.Common.Constants
 @using CleanArchitecture.Blazor.Application.Common.Interfaces.Identity
+@using CleanArchitecture.Blazor.Application.Features.Common.DTOs
 @using CleanArchitecture.Blazor.Application.Features.Common.Queries
 @using CleanArchitecture.Blazor.Application.Features.MenuSectionItems.DTOs
 @using CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.Commands.AddEdit
@@ -19,30 +20,25 @@
 			<MudGrid>
 				@*TODO: define mudform that should be edit fields, for example:*@
 				<MudItem xs="12" md="6">
-					@* <MudNumericField Label="@L[model.GetMemberDescription(x=>x.MenuSectionItemId)]"
-									 @bind-Value="model.MenuSectionItemId"
-									 For="@(() => model.MenuSectionItemId)"
-									 Min="0"
-									 Required="false"
-									 RequiredError="@L["menu section item id is required!"]">
-					</MudNumericField> *@
-
-					@* <SelectListAutoComplete Label="Menu Section Item"
-											SelectedItem="selectedMenuSectionItem"
-											OnValueChanged="OnValueChanged"
-											SearchFunc="SearchItems"
-											IsRequired="true"></SelectListAutoComplete> *@
-
-					@* <SelectListAutoComplete T="string" SQL="@SelectListConstants.GetMenuSectionSelectList" Parameters="new object()" @bind-Value="model.MenuSectionItemId" /> *@
-
-					<MudAutocomplete T="MenuSectionItemDto"
+					@* <MudAutocomplete T="MenuSectionItemDto"
 									 Label="Menu Section Item"
-									 @bind-Value="selectedMenuSectionItem"
+                                     @bind-Value="selectedMenuSectionItem"
 									 CoerceText="true"
 									 ToStringFunc="@(m => m== null ? string.Empty : m.Title)"
 									 SearchFunc="SearchItems"
 									 ResetValueOnEmptyText="true"
-									 Clearable="true" />
+									 Clearable="true" /> *@
+
+                    <CommonAutoComplete TItem="CommonDropdownDto"
+                                        IdValue="model!.MenuSectionItemId"
+                                        Label="Menu Section Item"
+                                        Value="selectedMenuSectionItem"
+                                        Query="@SelectListConstants.GetMenuSectionItemSelectList"
+                                        ToStringFunc="@(m => m?.Name ?? string.Empty)"
+                                        Required="true"
+                                        RequiredMessage="Please select a menu section."
+                                        ValueChanged="OnChangeMenuSectionItem">
+                     </CommonAutoComplete>
 				</MudItem>
 				<MudItem xs="12" md="6">
 					<MudTextField Label="@L[model.GetMemberDescription(x=>x.Title)]"
@@ -111,36 +107,54 @@
 </MudDialog>
 
 @code {
-	MudForm? _form;
-	private bool _saving = false;
-	private bool _savingnew = false;
-	[CascadingParameter]
-	IMudDialogInstance MudDialog { get; set; } = default!;
-	AddEditMenuSectionSubItemCommandValidator _modelValidator = new();
-	[EditorRequired][Parameter] public AddEditMenuSectionSubItemCommand model { get; set; } = new();
-	[Inject] ISelectListService<MenuSectionItemDto> _selectListService { get; set; }
-	private MenuSectionItemDto selectedMenuSectionItem = new();
-	private IEnumerable<MenuSectionItemDto> menuSectionItems = new List<MenuSectionItemDto>();
+    MudForm? _form;
+    private bool _saving = false;
+    private bool _savingnew = false;
+    [CascadingParameter]
+    IMudDialogInstance MudDialog { get; set; } = default!;
+    AddEditMenuSectionSubItemCommandValidator _modelValidator = new();
+    [EditorRequired][Parameter] public AddEditMenuSectionSubItemCommand model { get; set; } = new();
+    [Inject] ISelectListService<CommonDropdownDto> _selectListService { get; set; }
+    private CommonDropdownDto selectedMenuSectionItem = new();
+    private IEnumerable<CommonDropdownDto> menuSectionItems = new List<CommonDropdownDto>();
     private List<string> allRoles;
     private IReadOnlyCollection<string> selectedRoles; // to bind selected chips
     private Form selectedForm;
     private List<Form> formList = [];
 
-	protected override async Task OnInitializedAsync()
-	{
+    protected override async Task OnInitializedAsync()
+    {
         allRoles = _roleService.GetAllRoles();
-		menuSectionItems = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionItemSelectList, new { });
-        formList = _formService.GetFormsList();
         if (!string.IsNullOrWhiteSpace(model.Roles))
         {
             selectedRoles = model.Roles.Split(',').ToList();
         }
-		if (model.Id > 0)
-		{
-			selectedMenuSectionItem = menuSectionItems.FirstOrDefault(e => e.Id == model.MenuSectionItemId)!;
+        getFormsDropdownList();
+        await GetMenuSectionItemsDropdownList();
+    }
+
+    private async Task GetMenuSectionItemsDropdownList()
+    {
+        menuSectionItems = await _selectListService.GetSelectList(SelectListConstants.GetMenuSectionSelectList, new { });
+        if (model.Id > 0)
+        {
+            selectedMenuSectionItem = menuSectionItems.FirstOrDefault(e => e.Id == model.MenuSectionItemId) ?? new CommonDropdownDto();
+        }
+    }
+
+    private void getFormsDropdownList()
+    {
+        formList = _formService.GetFormsList();
+        if (model.Id > 0)
+        {
             selectedForm = formList.FirstOrDefault(e => e.Url == model.Href)!;
-		}
-	}
+        }
+    }
+
+    // private void getRoles()
+    // {
+        
+    // }
 
 	async Task Submit()
 	{
@@ -200,21 +214,6 @@
 		}
 	}
 	void Cancel() => MudDialog.Cancel();
-
-	// private void OnValueChanged(SelectListDto value)
-	// {
-	// 	selectedMenuSectionItem = value;
-	// 	// Assign the selected item's Id to MenuSectionId
-	// 	model.MenuSectionItemId = value?.Id ?? 0; // Assuming 0 is a default value
-	// }
-
-	private async Task<IEnumerable<MenuSectionItemDto>> SearchItems(string searchText, CancellationToken cancellationToken)
-	{
-		if (string.IsNullOrWhiteSpace(searchText))
-			return menuSectionItems;
-
-		return menuSectionItems.Where(x => x.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase));
-	}
     
     private async Task<IEnumerable<Form>> SearchForm(string searchText, CancellationToken cancellationToken)
     {
@@ -222,5 +221,10 @@
             return formList.AsEnumerable();
 
         return formList.Where(x => x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void OnChangeMenuSectionItem(CommonDropdownDto menuSectionItem)
+    {
+        selectedMenuSectionItem = menuSectionItem;
     }
 }
