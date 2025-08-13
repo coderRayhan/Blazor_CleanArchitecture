@@ -20,6 +20,7 @@ using CleanArchitecture.Blazor.Application.Features.MenuSectionItems.Commands.Ad
 using CleanArchitecture.Blazor.Application.Features.MenuSectionItems.DTOs;
 using CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.Commands.AddEdit;
 using CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.DTOs;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.Mappers;
 

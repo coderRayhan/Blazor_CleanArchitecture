@@ -4,6 +4,7 @@
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Caching;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.DTOs;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Mappers;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.PicklistSets.Queries.ByName;
 

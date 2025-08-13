@@ -13,6 +13,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using CleanArchitecture.Blazor.Domain.Entities.Management;
+
 namespace CleanArchitecture.Blazor.Domain.Events.MenuSectionSubItems;
 
     public class MenuSectionSubItemCreatedEvent : DomainEvent

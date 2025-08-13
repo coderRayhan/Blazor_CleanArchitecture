@@ -1,4 +1,6 @@
-﻿namespace CleanArchitecture.Blazor.Application.Features.PicklistSets.Specifications;
+﻿using CleanArchitecture.Blazor.Domain.Entities.Management;
+
+namespace CleanArchitecture.Blazor.Application.Features.PicklistSets.Specifications;
 #nullable disable warnings
 public class PicklistSetAdvancedSpecification : Specification<PicklistSet>
 {

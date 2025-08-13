@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Blazor.Application.Features.PicklistSets.Commands.AddEdit;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.DTOs;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.PicklistSets.Mappers;
 #pragma warning disable RMG020

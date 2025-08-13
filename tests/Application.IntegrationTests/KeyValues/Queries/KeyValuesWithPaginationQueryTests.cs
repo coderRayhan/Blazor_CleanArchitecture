@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Queries.PaginationQuery;
 using CleanArchitecture.Blazor.Domain.Entities;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 using NUnit.Framework;
 
 namespace CleanArchitecture.Blazor.Application.IntegrationTests.KeyValues.Queries;

@@ -1,7 +1,7 @@
 ﻿using CleanArchitecture.Blazor.Domain.Common.Entities;
 using CleanArchitecture.Blazor.Domain.Common.Enums;
 
-namespace CleanArchitecture.Blazor.Domain.Entities;
+namespace CleanArchitecture.Blazor.Domain.Entities.Management;
 public class MenuSectionSubItem : BaseAuditableEntity
 {
     public int MenuSectionItemId { get; set; }

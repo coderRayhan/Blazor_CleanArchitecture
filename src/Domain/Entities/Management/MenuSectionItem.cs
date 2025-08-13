@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using CleanArchitecture.Blazor.Domain.Common.Entities;
+﻿using CleanArchitecture.Blazor.Domain.Common.Entities;
 using CleanArchitecture.Blazor.Domain.Common.Enums;
 
-namespace CleanArchitecture.Blazor.Domain.Entities;
+namespace CleanArchitecture.Blazor.Domain.Entities.Management;
 public class MenuSectionItem : BaseAuditableEntity
 {
     public int MenuSectionId { get; set; }

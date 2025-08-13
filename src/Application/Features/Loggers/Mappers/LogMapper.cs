@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Blazor.Application.Features.Loggers.DTOs;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.Loggers.Mappers;
 [Mapper]

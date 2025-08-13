@@ -13,6 +13,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using CleanArchitecture.Blazor.Domain.Entities.Management;
+
 namespace CleanArchitecture.Blazor.Application.Features.MenuSectionSubItems.Specifications;
 #nullable disable warnings
 /// <summary>

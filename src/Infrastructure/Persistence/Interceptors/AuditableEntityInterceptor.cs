@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Blazor.Domain.Common.Entities;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 

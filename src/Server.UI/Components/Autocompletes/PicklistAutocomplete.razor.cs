@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Blazor.Application.Features.PicklistSets.DTOs;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Server.UI.Components.Autocompletes;
 

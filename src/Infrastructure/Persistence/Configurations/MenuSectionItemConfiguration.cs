@@ -13,6 +13,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitecture.Blazor.Infrastructure.Persistence.Configurations;

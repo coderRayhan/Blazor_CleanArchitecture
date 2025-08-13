@@ -5,7 +5,7 @@ using CleanArchitecture.Blazor.Domain.Common.Entities;
 using CleanArchitecture.Blazor.Domain.Identity;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace CleanArchitecture.Blazor.Domain.Entities;
+namespace CleanArchitecture.Blazor.Domain.Entities.Management;
 
 public class AuditTrail : IEntity<int>
 {

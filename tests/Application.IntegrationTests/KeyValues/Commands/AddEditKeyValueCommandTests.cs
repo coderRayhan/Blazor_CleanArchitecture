@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Commands.AddEdit;
 using CleanArchitecture.Blazor.Domain.Entities;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 using FluentAssertions;
 using FluentValidation;
 using NUnit.Framework;

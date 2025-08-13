@@ -3,6 +3,7 @@
 
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Queries.ByName;
 using CleanArchitecture.Blazor.Domain.Entities;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 using FluentAssertions;
 using NUnit.Framework;
 

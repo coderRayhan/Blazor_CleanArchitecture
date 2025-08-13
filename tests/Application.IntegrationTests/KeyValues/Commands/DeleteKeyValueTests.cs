@@ -3,6 +3,7 @@ using CleanArchitecture.Blazor.Application.Common.ExceptionHandlers;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Commands.AddEdit;
 using CleanArchitecture.Blazor.Application.Features.PicklistSets.Commands.Delete;
 using CleanArchitecture.Blazor.Domain.Entities;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 using FluentAssertions;
 using NUnit.Framework;
 

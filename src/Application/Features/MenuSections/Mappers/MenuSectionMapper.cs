@@ -18,6 +18,7 @@
 
 using CleanArchitecture.Blazor.Application.Features.MenuSections.Commands.AddEdit;
 using CleanArchitecture.Blazor.Application.Features.MenuSections.DTOs;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.MenuSections.Mappers;
 

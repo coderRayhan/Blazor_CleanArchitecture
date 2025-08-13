@@ -1,6 +1,6 @@
 ﻿using CleanArchitecture.Blazor.Domain.Common.Entities;
 
-namespace CleanArchitecture.Blazor.Domain.Entities;
+namespace CleanArchitecture.Blazor.Domain.Entities.Management;
 public class MenuSection : BaseAuditableEntity
 {
     public string Title { get; set; } = string.Empty;

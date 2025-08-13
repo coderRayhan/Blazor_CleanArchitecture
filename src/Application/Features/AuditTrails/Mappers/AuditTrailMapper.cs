@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Blazor.Application.Features.AuditTrails.DTOs;
 using CleanArchitecture.Blazor.Application.Features.Identity.Mappers;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.AuditTrails.Mappers;
 #pragma warning disable RMG020

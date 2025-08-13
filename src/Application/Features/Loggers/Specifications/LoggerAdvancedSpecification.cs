@@ -1,4 +1,5 @@
 ﻿using CleanArchitecture.Blazor.Application.Features.Loggers.Queries.PaginationQuery;
+using CleanArchitecture.Blazor.Domain.Entities.Management;
 
 namespace CleanArchitecture.Blazor.Application.Features.Loggers.Specifications;
 #nullable disable warnings
