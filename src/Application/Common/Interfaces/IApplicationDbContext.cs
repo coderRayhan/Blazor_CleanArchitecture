@@ -18,7 +18,6 @@ public interface IApplicationDbContext
 
     DbSet<Lookup> Lookups { get; set; }
     DbSet<LookupDetail> LookupDetails { get; set; }
-    DbSet<Tenant> Tenants { get; set; }
     ChangeTracker ChangeTracker { get; }
 
     DbSet<DataProtectionKey> DataProtectionKeys { get; set; }

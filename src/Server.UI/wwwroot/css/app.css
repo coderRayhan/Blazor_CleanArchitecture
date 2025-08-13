@@ -94,20 +94,22 @@
     }
 
 .responsive-image {
-    width: auto; 
-    height: auto; 
-    max-height: 200px;
+    max-height: 100px;
     object-fit: contain;
 }
 
-/*@media (max-width: 600px) {
-    .responsive-image {
-        max-height: 150px; 
+.nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    /*justify-content: center;*/
+}
+
+/* On small screens, stack vertically */
+@media (max-width: 600px) {
+    .nav-buttons {
+        flex-direction: column;
+        align-items: center;
     }
 }
 
-@media (min-width: 601px) {
-    .responsive-image {
-        max-height: 200px;
-    }
-}*/

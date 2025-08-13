@@ -31,7 +31,6 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<MenuSectionSubItem> MenuSectionSubItems { get; set; }
     public DbSet<Lookup> Lookups { get; set; }
     public DbSet<LookupDetail> LookupDetails { get; set; }
-    public DbSet<Tenant> Tenants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
